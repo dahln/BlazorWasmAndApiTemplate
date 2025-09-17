@@ -210,7 +210,12 @@
 
     async private Task Delete()
     {
-        var modal = _modalService.Show<ConfirmDialog>("Are you sure you want to delete this customer?");
+        var options = new ModalOptions()
+        {
+            Class = "bg-dark text-white modal-custom modal-size-small",
+            OverlayCustomClass = "custom-modal-overlay"
+        };
+        var modal = _modalService.Show<ConfirmDialog>("Are you sure you want to delete this customer?", options);
         var modalResult = await modal.Result;
 
         if (modalResult.Cancelled) { }

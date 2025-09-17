@@ -1,49 +1,102 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.JSInterop
 
+@inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
 @inject BlazorTemplate.App.Services.API API
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand ps-1" href="/">
-            BlazorTemplate
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
-                aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand ms-2" href="/">Blazor Template</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarScroll">
-            <ul class="navbar-nav ms-md-auto my-2 my-lg-0">
-                <AuthorizeView>
-                    <Authorized>
-                        <li class="nav-item">
-                            <a class="nav-link me-2" href="customers"><i class="bi bi-search search-icon me-2"></i>Search</a>
-                        </li>
-                        @if (context.User.IsInRole("Administrator"))
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link" href="admin"><i class="bi bi-gear admin-icon me-2"></i>Admin</a>
-                        </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link" href="account"><i class="bi bi-person-gear user-icon me-2"></i>@context.User.Identity.Name</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="logout" class="nav-link"><i class="bi bi-box-arrow-right signout-icon me-1"></i>Log out</a>
-                        </li>
-                    </Authorized>
-                    <NotAuthorized>
-
-                    </NotAuthorized>
-                </AuthorizeView>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                
             </ul>
+            <span class="navbar-text">
+                @* Navbar text with an inline element *@
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <AuthorizeView>
+                        <Authorized>
+                            <li class="nav-item">
+                                <a class="nav-link me-2" href="customers"><i class="bi bi-search search-icon me-2"></i>Search</a>
+                            </li>
+                            @if (context.User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="admin"><i class="bi bi-gear admin-icon me-2"></i>Admin</a>
+                                </li>
+                            }
+                            <li class="nav-item ms-auto">
+                                <button class="nav-link" @onclick="ToggleTheme">
+                                    @if (_isDarkMode)
+                                    {
+                                        <i class="bi bi-moon-fill me-1" style="color: mediumpurple;"></i> <span>Dark Mode</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-sun text-warning me-1"></i> <span>Light Mode</span>
+                                    }
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="account"><i class="bi bi-person-gear user-icon me-2"></i>@context.User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="logout" class="nav-link"><i class="bi bi-box-arrow-right signout-icon me-1"></i>Log out</a>
+                            </li>
+                        </Authorized>
+                        <NotAuthorized>
+                            <li class="nav-item ms-auto">
+                                <button class="nav-link" @onclick="ToggleTheme">
+                                    @if (_isDarkMode)
+                                    {
+                                        <i class="bi bi-moon-fill me-1" style="color: mediumpurple;"></i> <span>Dark Mode</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-sun text-warning me-1"></i> <span>Light Mode</span>
+                                    }
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register"><i class="bi bi-person-plus text-success me-2"></i>Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login"><i class="bi bi-box-arrow-in-right text-info me-2"></i>Sign In</a>
+                            </li>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </ul>
+            </span>
         </div>
     </div>
 </nav>
 
 
+
+
 @code{
+
+    private bool _isDarkMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var theme = await JSRuntime.InvokeAsync<string>("loadTheme");
+        _isDarkMode = theme == "dark";
+    }
+
+    private async Task ToggleTheme()
+    {
+        _isDarkMode = !_isDarkMode;
+        var theme = _isDarkMode ? "dark" : "light";
+        await JSRuntime.InvokeVoidAsync("setTheme", theme);
+    }
 
     private void BeginSignOut(MouseEventArgs args)
     {

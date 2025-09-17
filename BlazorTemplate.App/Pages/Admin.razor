@@ -232,13 +232,11 @@
 
     async private Task DeleteUser(BlazorTemplate.Dto.User user)
     {
-        var options = new ModalOptions() 
-        { 
-            Position = ModalPosition.Middle,
-            Size = ModalSize.ExtraLarge,
-            Class = "bg-dark text-white modal-custom modal-size-large",
-            OverlayCustomClass = "custom-modal-overlay"
-        };
+        var options = new ModalOptions()
+            {
+                Class = "bg-dark text-white modal-custom modal-size-small",
+                OverlayCustomClass = "custom-modal-overlay"
+            };
 
         var modal = _modalService.Show<ConfirmDialog>("Are you sure you want to delete this user?", options);
         var modalResult = await modal.Result;
