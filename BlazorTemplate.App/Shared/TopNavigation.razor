@@ -32,7 +32,7 @@
                                     <a class="nav-link" href="admin"><i class="bi bi-gear admin-icon me-2"></i>Admin</a>
                                 </li>
                             }
-                            <li class="nav-item ms-auto">
+                            <li class="nav-item">
                                 <button class="nav-link" @onclick="ToggleTheme">
                                     @if (_isDarkMode)
                                     {
@@ -52,7 +52,7 @@
                             </li>
                         </Authorized>
                         <NotAuthorized>
-                            <li class="nav-item ms-auto">
+                            <li class="nav-item">
                                 <button class="nav-link" @onclick="ToggleTheme">
                                     @if (_isDarkMode)
                                     {
