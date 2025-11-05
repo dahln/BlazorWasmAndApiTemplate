@@ -1,7 +1,7 @@
 @page "/register"
 @using BlazorTemplate.Identity
 
-@inject IAccountManagement Acct
+@inject AuthenticationManager _authenticationManager
 @inject NavigationManager _navigationManager
 @inject IToastService _toastService
 
@@ -105,7 +105,7 @@
             return;
         }
 
-        var result = await Acct.RegisterAsync(email!, password!);
+        var result = await _authenticationManager.RegisterAsync(email!, password!);
 
         if (result.Succeeded)
         {

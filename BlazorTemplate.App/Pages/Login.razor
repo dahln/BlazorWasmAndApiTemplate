@@ -2,7 +2,7 @@
 
 @using BlazorTemplate.Identity
 @using BlazorTemplate.Dto
-@inject IAccountManagement Acct
+@inject AuthenticationManager _authenticationManager
 @inject BlazorTemplate.App.Services.API API
 @inject IToastService _toastService
 @inject NavigationManager _navigationManager
@@ -164,7 +164,7 @@
             return;
         }
 
-        var result = await Acct.LoginAsync(email!, password!, TwoFactorCode, TwoFactorRecoveryCode);
+        var result = await _authenticationManager.LoginAsync(email!, password!, TwoFactorCode, TwoFactorRecoveryCode);
 
         if(result.Prompt2FA && !TwoFactorRecoveryPrompt)
         {
@@ -238,7 +238,7 @@
             return;
         }
 
-        var result = await Acct.RegisterAsync(email!, password!);
+        var result = await _authenticationManager.RegisterAsync(email!, password!);
 
         if (result.Succeeded)
         {

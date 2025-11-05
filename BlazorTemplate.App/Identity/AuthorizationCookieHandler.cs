@@ -6,7 +6,7 @@ namespace BlazorTemplate.Identity
     /// <summary>
     /// Handler to ensure cookie credentials are automatically sent over with each request.
     /// </summary>
-    public class CookieHandler : DelegatingHandler
+    public class AuthorizationCookieHandler : DelegatingHandler
     {
         /// <summary>
         /// Main method to override for the handler.

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net.Http.Json;
-using BlazorTemplate.Identity.Models;
 using BlazorTemplate.App.Services;
 using BlazorTemplate.Dto;
 using Newtonsoft.Json;
@@ -10,13 +9,13 @@ using System.Runtime.CompilerServices;
 
 namespace BlazorTemplate.Identity
 {
-    public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IAccountManagement
+    public class AuthenticationManager : AuthenticationStateProvider
     {
             
         private API API { get; set; }
         private bool _authenticated = false;
         private readonly ClaimsPrincipal Unauthenticated = new(new ClaimsIdentity());
-        public CookieAuthenticationStateProvider(API api)
+        public AuthenticationManager(API api)
         {
             API = api;
         }
@@ -144,7 +143,7 @@ namespace BlazorTemplate.Identity
                             .Select(c => new Claim(c.Key, c.Value)));
 
                     // set the principal
-                    var id = new ClaimsIdentity(claims, nameof(CookieAuthenticationStateProvider));
+                    var id = new ClaimsIdentity(claims, nameof(AuthenticationManager));
                     user = new ClaimsPrincipal(id);
                     _authenticated = true;
                 }

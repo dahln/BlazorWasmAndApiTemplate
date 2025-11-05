@@ -17,20 +17,20 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // register the cookie handler
-builder.Services.AddScoped<CookieHandler>();
+builder.Services.AddScoped<AuthorizationCookieHandler>();
 
 // set up authorization
 builder.Services.AddAuthorizationCore();
 
 // register the custom state provider
-builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationManager>();
 
 // register the account management interface
 builder.Services.AddScoped(
-    sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
+    sp => (AuthenticationManager)sp.GetRequiredService<AuthenticationStateProvider>());
 
 builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-    .AddHttpMessageHandler<CookieHandler>();
+    .AddHttpMessageHandler<AuthorizationCookieHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("API"));
 
