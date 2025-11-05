@@ -18,31 +18,14 @@ public class UserInfo
     /// <summary>
     /// The list of claims for the user.
     /// </summary>
-    public Dictionary<string, string> Claims { get; set; }
-     = [];
+    public Dictionary<string, string> Claims { get; set; } = [];
 }
 
-
-/// <summary>
-/// Basic user information to register and/or login.
-/// </summary>
-public class UserBasic
-{
-    /// <summary>
-    /// The email address.
-    /// </summary>
-    public string Email { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The password.
-    /// </summary>
-    public string Password { get; set; } = string.Empty;
-}
 
 /// <summary>
 /// Response for login and registration.
 /// </summary>
-public class FormResult
+public class AuthenticationResponse
 {
     /// <summary>
     /// Gets or sets a value indicating whether the action was successful.

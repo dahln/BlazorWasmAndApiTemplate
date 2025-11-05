@@ -20,7 +20,7 @@ namespace BlazorTemplate.Identity
             API = api;
         }
 
-        public async Task<FormResult> RegisterAsync(string email, string password)
+        public async Task<AuthenticationResponse> RegisterAsync(string email, string password)
         {
             try
             {
@@ -35,11 +35,11 @@ namespace BlazorTemplate.Identity
                 if(result)
                 {
 
-                    return new FormResult { Succeeded = true };
+                    return new AuthenticationResponse { Succeeded = true };
                 }
                 else
                 {
-                    return new FormResult
+                    return new AuthenticationResponse
                     {
                         Succeeded = false
                     };
@@ -48,14 +48,14 @@ namespace BlazorTemplate.Identity
             catch { }
              
             // unknown error
-            return new FormResult
+            return new AuthenticationResponse
             {
                 Succeeded = false,
                 ErrorList = ["An unknown error prevented registration from succeeding."]
             };
         }
 
-        public async Task<FormResult> LoginAsync(string email, string password, string? twoFactorCode, string? twoFactorRecoveryCode)
+        public async Task<AuthenticationResponse> LoginAsync(string email, string password, string? twoFactorCode, string? twoFactorRecoveryCode)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace BlazorTemplate.Identity
                     NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
                     // success!
-                    return new FormResult { Succeeded = true };
+                    return new AuthenticationResponse { Succeeded = true };
                 }
                 else if(response.IsSuccessStatusCode == false)
                 {
@@ -83,7 +83,7 @@ namespace BlazorTemplate.Identity
 
                     if(error.Detail == "RequiresTwoFactor")
                     {
-                        return new FormResult
+                        return new AuthenticationResponse
                         {
                             Succeeded = false,
                             Prompt2FA = true
@@ -95,7 +95,7 @@ namespace BlazorTemplate.Identity
             }
 
             // unknown error
-            return new FormResult
+            return new AuthenticationResponse
             {
                 Succeeded = false,
                 ErrorList = ["Invalid email and/or password."]
