@@ -2,15 +2,14 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net.Http.Json;
-using BlazorTemplate.Identity.Models;
 using BlazorTemplate.App.Services;
 using BlazorTemplate.Dto;
 using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 
-namespace BlazorTemplate.Identity
+namespace BlazorTemplate.App.Services
 {
-    public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IAccountManagement
+    public class CookieAuthenticationStateProvider : AuthenticationStateProvider
     {
             
         private API API { get; set; }

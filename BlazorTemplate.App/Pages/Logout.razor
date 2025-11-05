@@ -1,6 +1,6 @@
 @page "/logout"
-@using BlazorTemplate.Identity
-@inject IAccountManagement AcctMgmt
+@using BlazorTemplate.App.Services
+@inject CookieAuthenticationStateProvider AcctMgmt
 
 <AuthorizeView @ref="authView">
     <Authorized>

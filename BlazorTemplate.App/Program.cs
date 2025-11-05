@@ -10,7 +10,6 @@ using Blazored.Modal;
 using Blazored.Toast;   
 using BlazorSpinner;
 using Blazored.SessionStorage;
-using BlazorTemplate.Identity;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,9 +24,9 @@ builder.Services.AddAuthorizationCore();
 // register the custom state provider
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
 
-// register the account management interface
-builder.Services.AddScoped(
-    sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
+// register the authentication state provider as itself for direct access
+builder.Services.AddScoped<CookieAuthenticationStateProvider>(
+    sp => (CookieAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
 
 builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<CookieHandler>();

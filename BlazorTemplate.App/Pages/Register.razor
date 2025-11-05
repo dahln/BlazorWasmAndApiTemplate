@@ -1,7 +1,7 @@
 @page "/register"
-@using BlazorTemplate.Identity
+@using BlazorTemplate.App.Services
 
-@inject IAccountManagement Acct
+@inject CookieAuthenticationStateProvider Acct
 @inject NavigationManager _navigationManager
 @inject IToastService _toastService
 

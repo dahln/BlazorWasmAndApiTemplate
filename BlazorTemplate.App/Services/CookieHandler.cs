@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace BlazorTemplate.Identity
+namespace BlazorTemplate.App.Services
 {
     /// <summary>
     /// Handler to ensure cookie credentials are automatically sent over with each request.
