@@ -11,7 +11,6 @@ namespace BlazorTemplate.App.Services
 {
     public class CookieAuthenticationStateProvider : AuthenticationStateProvider
     {
-            
         private API API { get; set; }
         private bool _authenticated = false;
         private readonly ClaimsPrincipal Unauthenticated = new(new ClaimsIdentity());
