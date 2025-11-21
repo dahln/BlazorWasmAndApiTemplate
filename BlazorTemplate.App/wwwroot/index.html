@@ -40,6 +40,32 @@
                 }
             }, 25);
         }
+        window.setTheme = (theme) => {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+        };
+
+        window.loadTheme = () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            setTheme(theme);
+            return theme;
+        };
+
+        (async function () {
+            loadTheme();
+            try {
+                const response = await fetch('/api/v1/metadata');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const metaData = await response.json();
+                if (metaData && metaData.title) {
+                    document.title = metaData.title;
+                }
+            } catch (error) {
+                console.error('Failed to fetch site metadata:', error);
+            }
+        })();
     </script>
 
 </body>

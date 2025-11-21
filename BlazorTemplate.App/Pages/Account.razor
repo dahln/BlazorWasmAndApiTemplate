@@ -228,11 +228,9 @@
         var userAlreadyExists = await API.PostAsync<bool>("api/v1/account/exists", new Dto.AccountEmail() { Email = NewEmail }, false);
         if(userAlreadyExists == false)
         {
-            var options = new ModalOptions() 
-            { 
-                Position = ModalPosition.Middle,
-                Size = ModalSize.ExtraLarge,
-                Class = "bg-dark text-white modal-custom modal-size-large",
+            var options = new ModalOptions()
+            {
+                Class = "bg-dark text-white modal-custom modal-size-small",
                 OverlayCustomClass = "custom-modal-overlay"
             };
 
@@ -258,13 +256,11 @@
 
     async public Task ChangePassword()
     {
-        var options = new ModalOptions() 
-        { 
-            Position = ModalPosition.Middle,
-            Size = ModalSize.ExtraLarge,
-            Class = "bg-dark text-white modal-custom modal-size-large",
-            OverlayCustomClass = "custom-modal-overlay"
-        };
+        var options = new ModalOptions()
+            {
+                Class = "bg-dark text-white modal-custom modal-size-small",
+                OverlayCustomClass = "custom-modal-overlay"
+            };
 
         var modal = _modalService.Show<ConfirmDialog>("Please confirm you want to change your password", options);
         var modalResult = await modal.Result;
@@ -281,13 +277,11 @@
 
     async public Task DeleteAccount()
     {
-        var options = new ModalOptions() 
-        { 
-            Position = ModalPosition.Middle,
-            Size = ModalSize.ExtraLarge,
-            Class = "bg-dark text-white modal-custom modal-size-large",
-            OverlayCustomClass = "custom-modal-overlay"
-        };
+        var options = new ModalOptions()
+            {
+                Class = "bg-dark text-white modal-custom modal-size-small",
+                OverlayCustomClass = "custom-modal-overlay"
+            };
         var modal = _modalService.Show<ConfirmDialog>("Please confirm you want to delete your account. This cannot be undone.", options);
         var modalResult = await modal.Result;
 
