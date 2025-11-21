@@ -7,10 +7,9 @@ using BlazorTemplate.App.Services;
 
 using Blazored.LocalStorage;
 using Blazored.Modal;
-using Blazored.Toast;   
+using Blazored.Toast;
 using BlazorSpinner;
 using Blazored.SessionStorage;
-using BlazorTemplate.Identity;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

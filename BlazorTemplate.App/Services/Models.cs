@@ -1,4 +1,4 @@
-﻿namespace BlazorTemplate.Identity;
+﻿namespace BlazorTemplate.App.Services;
 
 /// <summary>
 /// User info from identity endpoint to establish claims.
