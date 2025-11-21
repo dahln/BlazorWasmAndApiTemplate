@@ -65,7 +65,7 @@ namespace BlazorTemplate.API.Controllers
         async public Task<IActionResult> AccountExistsByEmail([FromBody]AccountEmail model)
         {
             var userExists = await _accountService.AccountExistsByEmail(model.Email);
-            return Ok(userExists != null);
+            return Ok(userExists);
         }
 
         [Authorize]

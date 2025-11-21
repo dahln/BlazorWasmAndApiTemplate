@@ -3,7 +3,6 @@ using BlazorTemplate.Service;
 using BlazorTemplate.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
-using Xunit;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
@@ -11,10 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BlazoreTemplate.Test;
+namespace BlazorTemplate.Test;
 
 
+[TestClass]
 public class AccountServiceTests
 {
     private ApplicationDbContext GetInMemoryDbContext()
@@ -51,7 +52,7 @@ public class AccountServiceTests
         return new AccountService(db, userManager, signInManager);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task UserRegistration()
     {
         var db = GetInMemoryDbContext();
@@ -61,22 +62,22 @@ public class AccountServiceTests
         var result = await service.Register("test@example.com", "Password123!");
 
         var count = await service.UserCount();
-        Assert.Equal(1, count);
+        Assert.AreEqual(1, count);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetSystemSettings()
     {
         var db = GetInMemoryDbContext();
         var service = await GetAccountService(db);
         
         var settings = await service.GetSystemSettings();
-        Assert.NotNull(settings);
-        Assert.Null(settings.SystemEmailAddress);
-        Assert.Equal("--- NOT DISPLAYED FOR SECURITY ---", settings.EmailApiKey);
+        Assert.IsNotNull(settings);
+        Assert.IsNull(settings.SystemEmailAddress);
+        Assert.AreEqual("--- NOT DISPLAYED FOR SECURITY ---", settings.EmailApiKey);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task UpdateSystemSettings()
     {
         var db = GetInMemoryDbContext();
@@ -88,11 +89,11 @@ public class AccountServiceTests
         await service.UpdateSystemSettings(settings);
 
         settings = await service.GetSystemSettings();
-        Assert.NotNull(settings);
-        Assert.False(settings.RegistrationEnabled);
+        Assert.IsNotNull(settings);
+        Assert.IsFalse(settings.RegistrationEnabled);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task AccountAllowRegistrationOperations()
     {
         var db = GetInMemoryDbContext();
@@ -103,10 +104,10 @@ public class AccountServiceTests
         var service = await GetAccountService(db);
         
         var result = await service.AccountAllowRegistrationOperations();
-        Assert.True(result);
+        Assert.IsTrue(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task AccountAllowAllOperationsIfSettingsExist()
     {
         var db = GetInMemoryDbContext();
@@ -114,27 +115,27 @@ public class AccountServiceTests
 
         //Settings will be created on application startup, but if missing, this should return false 
         var result = await service.AccountAllowAllOperations();
-        Assert.False(result);
+        Assert.IsFalse(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task FirstRegisteredUserShouldBeAdmin()
     {
         var db = GetInMemoryDbContext();
         var service = await GetAccountService(db);
         
         var result = await service.Register("admin@example.com", "Password123!");
-        Assert.Empty(result); // No errors
+        Assert.AreEqual(0, result.Count); // No errors
         
         var user = db.Users.FirstOrDefault(u => u.Email == "admin@example.com");
-        Assert.NotNull(user);
+        Assert.IsNotNull(user);
         
         // Check admin role
         var roles = await service.GeCurrentUserRoles(user.Id);
-        Assert.Contains("Administrator", roles);
+        Assert.IsTrue(roles.Contains("Administrator"));
     }
 
-    [Fact]
+    [TestMethod]
     public async Task DeleteAccountAndAssociatedCustomersTest()
     {
         var db = GetInMemoryDbContext();
@@ -145,11 +146,11 @@ public class AccountServiceTests
         db.Customers.Add(new BlazorTemplate.Database.Customer { OwnerId = user.Id, Name = "TestCustomer" });
         db.SaveChanges();
         await service.DeleteAccount(user.Id);
-        Assert.Null(db.Users.FirstOrDefault(u => u.Id == user.Id));
-        Assert.Empty(db.Customers.Where(c => c.OwnerId == user.Id));
+        Assert.IsNull(db.Users.FirstOrDefault(u => u.Id == user.Id));
+        Assert.AreEqual(0, db.Customers.Where(c => c.OwnerId == user.Id).Count());
     }
 
-    [Fact]
+    [TestMethod]
     public async Task AccountExistsByEmailTest()
     {
         var db = GetInMemoryDbContext();
@@ -157,13 +158,13 @@ public class AccountServiceTests
         
         await service.Register("exists@example.com", "Password123!");
         var exists = await service.AccountExistsByEmail("exists@example.com");
-        Assert.True(exists);
+        Assert.IsTrue(exists);
         
         var notExists = await service.AccountExistsByEmail("notfound@example.com");
-        Assert.False(notExists);
+        Assert.IsFalse(notExists);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task GetCurrentUserRolesTest()
     {
         var db = GetInMemoryDbContext();
@@ -172,11 +173,11 @@ public class AccountServiceTests
         await service.Register("roleuser@example.com", "Password123!");
         var user = db.Users.First(u => u.Email == "roleuser@example.com");
         var roles = await service.GeCurrentUserRoles(user.Id);
-        Assert.NotNull(roles);
-        Assert.True(roles.Count >= 0);
+        Assert.IsNotNull(roles);
+        Assert.IsTrue(roles.Count >= 0);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task ToggleUserAdministratorRoleToNonAdminTest()
     {
         var db = GetInMemoryDbContext();
@@ -187,14 +188,14 @@ public class AccountServiceTests
         var user = db.Users.First(u => u.Email == "toggleadmin@example.com");
         await service.ToggleUserAdministratorRole(user.Id); // Should add admin
         var roles = await service.GeCurrentUserRoles(user.Id);
-        Assert.Contains("Administrator", roles);
+        Assert.IsTrue(roles.Contains("Administrator"));
         
         await service.ToggleUserAdministratorRole(user.Id); // Should remove admin
         roles = await service.GeCurrentUserRoles(user.Id);
-        Assert.DoesNotContain("Administrator", roles);
+        Assert.IsFalse(roles.Contains("Administrator"));
     }
 
-    [Fact]
+    [TestMethod]
     public async Task AccountTwoFactorEnabledTest()
     {
         var db = GetInMemoryDbContext();
@@ -203,10 +204,10 @@ public class AccountServiceTests
         await service.Register("2fauser@example.com", "Password123!");
         var user = db.Users.First(u => u.Email == "2fauser@example.com");
         var enabled = await service.AccountTwoFactorEnabled(user.Id);
-        Assert.False(enabled); // By default, 2FA is not enabled
+        Assert.IsFalse(enabled); // By default, 2FA is not enabled
     }
 
-    [Fact]
+    [TestMethod]
     public async Task UserSearchTest()
     {
         var db = GetInMemoryDbContext();
@@ -231,10 +232,10 @@ public class AccountServiceTests
         };
 
         var result = await service.UserSearch(search, administratorUser.Id);
-        Assert.Equal(10, result.Results.Count);
+        Assert.AreEqual(10, result.Results.Count);
 
         search.FilterText = "user24";
         var singleResult = await service.UserSearch(search, administratorUser.Id);
-        Assert.Single(singleResult.Results);
+        Assert.AreEqual(1, singleResult.Results.Count);
     }
 }
