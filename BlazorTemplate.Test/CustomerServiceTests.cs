@@ -3,7 +3,6 @@ using BlazorTemplate.Service;
 using BlazorTemplate.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
-using Xunit;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
@@ -11,9 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BlazoreTemplate.Test;
+namespace BlazorTemplate.Test;
 
+[TestClass]
 public class CustomerServiceTests
 {
     private ApplicationDbContext GetInMemoryDbContext()
@@ -30,7 +31,7 @@ public class CustomerServiceTests
     }
 
 
-    [Fact]
+    [TestMethod]
     public async Task AddCustomerAndGetCustomerById()
     {
         var db = GetInMemoryDbContext();
@@ -40,15 +41,15 @@ public class CustomerServiceTests
         //Test Create
         var customer = new BlazorTemplate.Dto.Customer { Name = "Test Customer", Email = "test@example.com" };
         var customerId = await service.CreateCustomerAsync(customer, userId);
-        Assert.NotNull(customerId);
+        Assert.IsNotNull(customerId);
 
         //Test Get
         var result = await service.GetCustomerAsync(customerId, userId);
-        Assert.NotNull(result);
-        Assert.Equal("Test Customer", result.Name);
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Test Customer", result.Name);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task UpdateCustomer()
     {
         var db = GetInMemoryDbContext();
@@ -59,21 +60,21 @@ public class CustomerServiceTests
        //Test Create
         var customerId = await service.CreateCustomerAsync(customer, userId);
         var added = await service.GetCustomerAsync(customerId, userId);
-        Assert.NotNull(added);
+        Assert.IsNotNull(added);
         
         //Update Customer
         added.Name = "New Name";
         var updatedResult = await service.UpdateCustomer(added, userId);
-        Assert.True(updatedResult);
+        Assert.IsTrue(updatedResult);
         
         //Get Customer and validate update
         var updated = await service.GetCustomerAsync(customerId, userId);
-        Assert.NotNull(updated);
-        Assert.Equal("New Name", updated.Name);
+        Assert.IsNotNull(updated);
+        Assert.AreEqual("New Name", updated.Name);
     }
 
 
-    [Fact]
+    [TestMethod]
     public async Task DeleteCustomer()
     {
         var db = GetInMemoryDbContext();
@@ -85,14 +86,14 @@ public class CustomerServiceTests
         //Test Create and Delete new customer
         var customerId = await service.CreateCustomerAsync(customer, userId);
         var deleted = await service.DeleteCustomerByIdAsync(customerId, userId);
-        Assert.True(deleted);
+        Assert.IsTrue(deleted);
 
         //Try to get deleted customer - should be null
         var result = await service.GetCustomerAsync(customerId, userId);
-        Assert.Null(result);
+        Assert.IsNull(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task SearchCustomers()
     {
         var db = GetInMemoryDbContext();
@@ -111,7 +112,7 @@ public class CustomerServiceTests
             FilterText = string.Empty
         };
         var searchResults = await service.SearchCustomersAsync(search, userId);
-        Assert.Equal(10, searchResults.Results.Count);
+        Assert.AreEqual(10, searchResults.Results.Count);
     }
 
 }

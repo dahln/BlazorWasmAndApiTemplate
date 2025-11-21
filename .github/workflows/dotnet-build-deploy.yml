@@ -3,8 +3,11 @@ name: CI/CD
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
+    branches: [ master ]
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [ master ]
     paths-ignore:
       - '**/README.md'
 
@@ -17,9 +20,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -28,6 +31,7 @@ jobs:
         run: dotnet test
 
       - name: Build, publish, and deploy
+        if: github.event_name != 'pull_request'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVERKEY }}" > ~/.ssh/id_rsa
