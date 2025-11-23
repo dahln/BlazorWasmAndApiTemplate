@@ -30,15 +30,15 @@ jobs:
       - name: Run Tests
         run: dotnet test
 
-      - name: Build, publish, and deploy
-        if: github.event_name != 'pull_request'
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVERKEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          sudo apt-get update && sudo apt-get upgrade -y
-          sudo apt-get install -y sshpass openssh-client
-          dotnet publish BlazorTemplate.API -c Release 
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -P ${{ secrets.SERVERPORT }} -r ${{ github.workspace }}/BlazorTemplate.API/bin/Release/net9.0/publish/* ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }}:/var/www/BlazorWasmAndApiTemplate      
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SERVERPORT }} ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }} "sudo systemctl restart kestrel-BlazorWasmAndApiTemplate.service"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SERVERPORT }} ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }} "sudo systemctl restart nginx"
+      # - name: Build, publish, and deploy
+      #   if: github.event_name != 'pull_request'
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SERVERKEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     sudo apt-get update && sudo apt-get upgrade -y
+      #     sudo apt-get install -y sshpass openssh-client
+      #     dotnet publish BlazorTemplate.API -c Release 
+      #     scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -P ${{ secrets.SERVERPORT }} -r ${{ github.workspace }}/BlazorTemplate.API/bin/Release/net9.0/publish/* ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }}:/var/www/BlazorWasmAndApiTemplate      
+      #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SERVERPORT }} ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }} "sudo systemctl restart kestrel-BlazorWasmAndApiTemplate.service"
+      #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SERVERPORT }} ${{ secrets.SERVERUSERNAME }}@${{ secrets.SERVERADDRESS }} "sudo systemctl restart nginx"
