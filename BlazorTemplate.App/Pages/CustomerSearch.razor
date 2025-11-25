@@ -15,12 +15,10 @@
 </div>
 
 <div class="row mt-3">
-    <div class="col-md-12">
+    <div class="col-md-6 offset-md-6">
         <form class="input-group float-end" @onsubmit="(() => SearchCustomers(0, false))" autocomplete="off">
             <input type="text" class="form-control" aria-label="Text input with dropdown button" @bind="Search.FilterText" autocomplete="off" />
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search me-2"></i>Search</button>
-            </div>
+            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search me-2"></i>Search</button>
         </form>
     </div>
 </div>
@@ -201,7 +199,7 @@
 
         Search = new Search()
         {
-            FilterText = string.IsNullOrEmpty(Search?.FilterText) ? null : Search?.FilterText,
+            FilterText = string.IsNullOrEmpty(Search?.FilterText) ? string.Empty : Search?.FilterText,
             Page = page == null ? Search.Page : (int)page,
             PageSize = PageSize,
             SortBy = Search.SortBy,

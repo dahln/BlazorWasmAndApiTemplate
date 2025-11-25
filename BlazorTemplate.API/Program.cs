@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 //Add this so we can access HTTPContext data in other services.
 builder.Services.AddHttpContextAccessor();
@@ -29,16 +31,6 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => { 
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlazorTemplate API", Version = "v1" }); 
-        c.ResolveConflictingActions((apiDescriptions) => apiDescriptions.First());
-    });
-
-
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(1));
 
 //Identity options. Uncomment this to required email confirmation before allowing sign in.
@@ -50,6 +42,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.MaxFailedAccessAttempts = 5;
     //options.SignIn.RequireConfirmedEmail = true;
 });
+
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
 
 //Adding necessary services.
 builder.Services.AddTransient<UserManager<IdentityUser>>();
@@ -95,8 +91,7 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
@@ -114,8 +109,14 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 //Expose identity API endpoints. Identity API doesn't include a logout method. One was created in the account controller, along with other account related endpoints.
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<IdentityUser>().WithTags("Identity");
 app.MapPost("/register", () => "Deprecated. Use /api/v1/account/register."); //This will disable the built in 'Identity /register' method.
+
+// Map Scalar API reference after all endpoints are mapped so it can discover controller endpoints as well
+if (app.Environment.IsDevelopment())
+{
+    app.MapScalarApiReference();
+}
 
 app.Run();
 

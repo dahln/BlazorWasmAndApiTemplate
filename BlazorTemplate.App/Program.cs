@@ -9,7 +9,6 @@ using Blazored.LocalStorage;
 using Blazored.Modal;
 using Blazored.Toast;
 using BlazorSpinner;
-using Blazored.SessionStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -39,7 +38,6 @@ builder.Services.AddScoped<SpinnerService>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
-builder.Services.AddBlazoredSessionStorage();
 
 await builder.Build().RunAsync();
 
