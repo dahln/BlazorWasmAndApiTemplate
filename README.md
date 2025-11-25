@@ -48,13 +48,13 @@ Getting started with this project is easy.
 
 ## Project Architecture
 This application now has 5 projects in the solution:
- - **API**: Handling HTTP requests and delegating all database and business logic operations to the Service layer. Manages authentication and authorization. Hosts the App in the same process.
+ - **API**: Handling HTTP requests and delegating all database and business logic operations to the Service layer. Manages authentication and authorization. Hosts the App in the same process. Review the .http file for example calls of each API call.
  - **Service**: The middle layer where all business logic and database operations are performed. The API does not directly interact with the database.
  - **App**: A Blazor WASM project that consumes the API. Hosted in the API process.
  - **Dto**: Contains data transfer objects shared between the API, Service, and App projects. This was previously named 'Common'.
  - **Database**: Contains all the Entities and DB Context.
 
-This separation makes the architecture more maintainable and scalable. The API project hosts both the API and the App. The App, while an independent application, is hosted as part of the API, which removes the need for complex CORS configurations. On startup, you can browse to Swagger to use the API directly or browse to the App.
+This separation makes the architecture more maintainable and scalable. The API project hosts both the API and the App. The App, while an independent application, is hosted as part of the API, which removes the need for complex CORS configurations. On startup, you can browse to the API documentation (Scalar) to use the API directly, or browse to the App. Scalar is typically hosted at `/scalar` — check `Program.cs` for the configured route if different.
 
 ## API Versioning
 There are tools to handle API versioning. Add which ever tools you prefer. This template handles API version manually by specifying v1 in the service URL.
@@ -101,7 +101,7 @@ If you don't want to use the UI/App, do these three steps:
 2. In BlazorTemplate.API program.cs, remove the "app.MapStaticAssets();" line
 3. In BlazorTemplate.API program.cs, remove the "app.MapFallbackToFile("index.html");" line
 
-In startup it still just "start" - It will probably start a new tab. Just navigate to /swagger to use the API directly.
+In startup it still just "start" - It will probably start a new tab. Just navigate to `/scalar` (or the configured route) to use the API directly.
 
 
 ## Licensing
