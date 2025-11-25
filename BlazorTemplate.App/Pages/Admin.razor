@@ -127,7 +127,7 @@
                         </td>
                         <td>
                             <div class="form-check mt-1">
-                                <input type="checkbox" class="form-check-input" id="@($"authorized_owner_{@item.Email}")" checked="@(item.IsAdministrator ? "checked" : null )" @onchange="(() => ToggleAdministrator(item))" disabled="item.IsSelf" />
+                                <input type="checkbox" class="form-check-input" id="@($"authorized_owner_{@item.Email}")" checked="@(item.IsAdministrator ? "checked" : null )" @onchange="(() => ToggleAdministrator(item))" disabled="@(item.IsSelf)" />
                                 <label class="form-check-label" for="@($"authorized_{@item.Email}")">Administrator</label>
                             </div>
                         </td>
@@ -201,7 +201,7 @@
 
         Search = new Search()
         {
-            FilterText = string.IsNullOrEmpty(Search?.FilterText) ? null : Search?.FilterText,
+            FilterText = string.IsNullOrEmpty(Search?.FilterText) ? string.Empty : Search?.FilterText,
             Page = page == null ? Search.Page : (int)page,
             PageSize = PageSize,
             SortBy = Search.SortBy,
